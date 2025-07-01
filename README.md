@@ -1,12 +1,58 @@
-# React + Vite
+# 🚗 Vehicle Tracker (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the **frontend** of a real-time vehicle tracking app built with **React** and **Leaflet**. It displays a moving car icon on the map using live or simulated GPS data from a backend API.
 
-Currently, two official plugins are available:
+## Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[https://vehicle-tracking-client.vercel.app/](https://vehicle-tracking-client.vercel.app/)
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 🗺️ Interactive map using **Leaflet** and **OpenStreetMap**
+- 📍 Real-time vehicle movement with marker updates
+- 🔁 Draws route history (polyline trail)
+- 🔄 Start / Pause control
+- 🧭 Auto-centering and direction-based marker rotation
+
+## Technologies
+
+- React
+- React Leaflet
+- Leaflet
+- OpenStreetMap
+- Fetch API for real-time updates
+
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/T3rex/Vehicle-Tracking-Client
+
+   cd vehicle-tracker-frontend
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Update the API URL (in config.jsx):
+   ```javascript
+   export const API_URL = "https://your-api-url.com/api/location";
+   ```
+4. Start the development server:
+   ```bash
+   npm start
+   ```
+
+## Build for Production
+
+Run this command to create a production build of the app:
+
+```bash
+npm run build
+```
+
+## Assets
+
+Place your custom car icon in src/assets or adjust the path accordingly in your code.

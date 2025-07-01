@@ -8,7 +8,7 @@ import car from "../assets/Car-icon.png";
 const carIcon = new L.Icon({
   iconUrl: car,
   iconSize: [40, 40],
-  iconAnchor: [20, 40], // optional: center-bottom
+  iconAnchor: [20, 40],
 });
 
 function MapComponent() {
@@ -72,7 +72,7 @@ function MapComponent() {
       <div>
         <button className="btn" onClick={handlePlayPause}>
           {" "}
-          {isPlaying ? "⏸ Pause" : "▶ Play"}
+          {isPlaying ? "⏸ Pause" : "▶ Play"}{" "}
         </button>
       </div>
     </>
