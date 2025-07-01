@@ -36,11 +36,27 @@ This is the **frontend** of a real-time vehicle tracking app built with **React*
    ```bash
    npm install
    ```
-3. Update the API URL (in config.jsx):
+3. Set the API URL and INITIAL_POSITION (in src/utils/contants.jsx):
+
    ```javascript
-   export const API_URL = "https://your-api-url.com/api/location";
+   export const INITIAL_POSITION = [28.59029, 77.33654];
+
+   export const FETCH_INTERVAL = 1000;
+
+   export const LOCAL_API_URL = "http://localhost:5000/api/location";
+
+   export const LIVE_API_URL =
+     "https://vehicle-tracking-server-3xn2.onrender.com/api/location";
    ```
-4. Start the development server:
+
+4. Configure the API URL in `src/utils/api.js`:
+
+   - For local development, use `LOCAL_API_URL`.
+   - For production or live data, use `LIVE_API_URL`.
+
+   Adjust the `INITIAL_POSITION` to your desired starting point.
+
+5. Start the development server:
    ```bash
    npm start
    ```
