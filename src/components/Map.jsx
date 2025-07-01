@@ -12,33 +12,39 @@ const carIcon = new L.Icon({
 });
 
 function MapComponent() {
-  const [position, setPosition] = useState([41.87662, -87.64765]);
-  const [route, setRoute] = useState([[41.87662, -87.64765]]);
+  const [position, setPosition] = useState([28.590290000000003, 77.33654]);
+  const [route, setRoute] = useState([[28.590290000000003, 77.33654]]);
+  const [isPlaying, setIsPlaying] = useState(false);
   const intervalRef = useRef(null);
 
-  const handlePlay = () => {
-    if (intervalRef.current) {
+  const handlePlayPause = () => {
+    if (isPlaying) {
       clearInterval(intervalRef.current);
+      intervalRef.current = null;
+      setIsPlaying(false);
     } else {
-      setRoute([]);
-    }
-
-    intervalRef.current = setInterval(async () => {
-      try {
-        const res = await fetch(API_URL);
-        if (res.status === 204) {
+      intervalRef.current = setInterval(async () => {
+        try {
+          const res = await fetch(API_URL);
+          if (res.status === 204) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+            setIsPlaying(false);
+            return;
+          }
+          const data = await res.json();
+          const newPos = [data[1], data[0]];
+          setPosition(newPos);
+          setRoute((prev) => [...prev, newPos]);
+        } catch (error) {
+          console.error("Failed to fetch location:", error);
           clearInterval(intervalRef.current);
           intervalRef.current = null;
-          return;
+          setIsPlaying(false);
         }
-        const data = await res.json();
-        const newPos = [data[0], data[1]];
-        setPosition(newPos);
-        setRoute((prev) => [...prev, newPos]);
-      } catch (error) {
-        console.error("Failed to fetch location:", error);
-      }
-    }, 1000);
+      }, 1000);
+      setIsPlaying(true);
+    }
   };
 
   useEffect(() => {
@@ -64,7 +70,10 @@ function MapComponent() {
       </MapContainer>
 
       <div>
-        <button onClick={handlePlay}>▶ Play</button>
+        <button className="btn" onClick={handlePlayPause}>
+          {" "}
+          {isPlaying ? "⏸ Pause" : "▶ Play"}
+        </button>
       </div>
     </>
   );
