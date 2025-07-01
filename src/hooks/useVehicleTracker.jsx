@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { fetchLocation } from "../utils/api";
+import { fetchLocation, retryOrThrowError } from "../utils/api";
 import { INITIAL_POSITION, FETCH_INTERVAL } from "../utils/constants";
 
 export function useVehicleTracker() {
@@ -14,7 +14,13 @@ export function useVehicleTracker() {
   const startTracking = () => {
     intervalRef.current = setInterval(async () => {
       try {
-        const data = await fetchLocation(index.current);
+        const data = await retryOrThrowError(
+          fetchLocation,
+          [index.current],
+          1000,
+          5
+        );
+        // console.log("Fetched data:", data);
         if (!data) {
           stopTracking();
           setRouteFinished(true);

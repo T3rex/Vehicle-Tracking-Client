@@ -18,7 +18,7 @@ function MapComponent() {
       <MapContainer
         className="MapContainer"
         center={position}
-        zoom={13}
+        zoom={14}
         scrollWheelZoom
       >
         <TileLayer
