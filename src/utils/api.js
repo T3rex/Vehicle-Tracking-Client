@@ -23,7 +23,9 @@ export const retryOrThrowError = async (
         if (res.success) {
           return resolve(res.data);
         }
-      } catch (err) {}
+      } catch (err) {
+        return resolve();
+      }
 
       attempts++;
       if (attempts >= maxRetries) {

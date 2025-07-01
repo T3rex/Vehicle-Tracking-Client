@@ -9,40 +9,44 @@ export function useVehicleTracker() {
   const [routeFinished, setRouteFinished] = useState(false);
 
   const index = useRef(0);
-  const intervalRef = useRef(null);
+  const timeoutRef = useRef(null);
+
+  const fetchNextPosition = async () => {
+    try {
+      const data = await retryOrThrowError(
+        fetchLocation,
+        [index.current],
+        1000,
+        5
+      );
+
+      if (!data) {
+        stopTracking();
+        setRouteFinished(true);
+        index.current = 0;
+        return;
+      }
+
+      const newPos = [data[1], data[0]];
+      setPosition(newPos);
+      setRoute((prev) => [...prev, newPos]);
+      index.current++;
+
+      timeoutRef.current = setTimeout(fetchNextPosition, FETCH_INTERVAL);
+    } catch (err) {
+      console.error("Error fetching location:", err);
+      stopTracking();
+    }
+  };
 
   const startTracking = () => {
-    intervalRef.current = setInterval(async () => {
-      try {
-        const data = await retryOrThrowError(
-          fetchLocation,
-          [index.current],
-          1000,
-          5
-        );
-        // console.log("Fetched data:", data);
-        if (!data) {
-          stopTracking();
-          setRouteFinished(true);
-          index.current = 0;
-          return;
-        }
-
-        const newPos = [data[1], data[0]];
-        setPosition(newPos);
-        setRoute((prev) => [...prev, newPos]);
-        index.current++;
-      } catch (err) {
-        console.error("Error fetching location:", err);
-        stopTracking();
-      }
-    }, FETCH_INTERVAL);
+    fetchNextPosition(); // Start loop
     setIsPlaying(true);
   };
 
   const stopTracking = () => {
-    clearInterval(intervalRef.current);
-    intervalRef.current = null;
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = null;
     setIsPlaying(false);
   };
 
@@ -61,7 +65,7 @@ export function useVehicleTracker() {
   };
 
   useEffect(() => {
-    return () => clearInterval(intervalRef.current);
+    return () => clearTimeout(timeoutRef.current);
   }, []);
 
   return {
