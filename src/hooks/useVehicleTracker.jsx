@@ -10,6 +10,7 @@ export function useVehicleTracker() {
 
   const index = useRef(0);
   const timeoutRef = useRef(null);
+  const isLocked = useRef(false);
 
   const fetchNextPosition = async () => {
     try {
@@ -34,13 +35,14 @@ export function useVehicleTracker() {
 
       timeoutRef.current = setTimeout(fetchNextPosition, FETCH_INTERVAL);
     } catch (err) {
+      clearTimeout(timeoutRef.current);
       console.error("Error fetching location:", err);
       stopTracking();
     }
   };
 
-  const startTracking = () => {
-    fetchNextPosition(); // Start loop
+  const startTracking = async () => {
+    await fetchNextPosition(); // Start loop
     setIsPlaying(true);
   };
 
@@ -50,7 +52,10 @@ export function useVehicleTracker() {
     setIsPlaying(false);
   };
 
-  const handlePlayPause = () => {
+  const handlePlayPause = async () => {
+    if (isLocked.current) return;
+    isLocked.current = true;
+
     if (isPlaying) {
       stopTracking();
     } else {
@@ -60,8 +65,12 @@ export function useVehicleTracker() {
         setRouteFinished(false);
         index.current = 0;
       }
-      startTracking();
+      await startTracking();
     }
+
+    setTimeout(() => {
+      isLocked.current = false;
+    }, 300);
   };
 
   useEffect(() => {

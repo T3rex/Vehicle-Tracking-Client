@@ -19,12 +19,17 @@ export const retryOrThrowError = async (
     const attempt = async () => {
       try {
         const res = await fn(...args);
-
+        if (!res) {
+          return resolve();
+        }
         if (res.success) {
           return resolve(res.data);
         }
       } catch (err) {
-        return resolve();
+        if (attempts >= maxRetries) {
+          return reject(err);
+        }
+        console.error(`Attempt ${attempts + 1} failed:`, err);
       }
 
       attempts++;
